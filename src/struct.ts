@@ -9,11 +9,39 @@ import { EventEmitter } from './ts-utils/event-emitter';
 import { Loop } from './ts-utils/loop';
 import { uuid } from './utils/uuid';
 import { Stream } from './ts-utils/stream';
+import { match } from './ts-utils/match';
+
+export const checkStrType = (str: string, type: ColumnDataType): boolean => {
+    switch (type) {
+        case 'string':
+            return true;
+        case 'number':
+            return !Number.isNaN(+str);
+        case 'bigint':
+            return !Number.isNaN(+str) || BigInt(str).toString() === str;
+        case 'boolean':
+            return ['y', 'n', '1', '0', 'true', 'false'].includes(str);
+        default:
+            return false;
+    }
+};
+
+export const returnType = (str: string, type: ColumnDataType) => {
+    return match(type)
+        .case('string', () => str)
+        .case('number', () => +str)
+        .case('bigint', () => BigInt(str))
+        .case('boolean', () => ['y', '1', 'true'].includes(str))
+        .exec()
+        .unwrap();
+};
+
 
 export enum PropertyAction {
     Read = 'read',
     Update = 'update'
 }
+
 
 // these are not property specific
 export enum DataAction {
