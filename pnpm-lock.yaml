@@ -11,6 +11,12 @@ importers:
       '@inquirer/prompts':
         specifier: ^7.2.1
         version: 7.2.1(@types/node@22.10.2)
+      '@trpc/client':
+        specifier: 11.0.0-rc.682
+        version: 11.0.0-rc.682(@trpc/server@11.0.0-rc.682(typescript@5.7.2))(typescript@5.7.2)
+      '@trpc/server':
+        specifier: 11.0.0-rc.682
+        version: 11.0.0-rc.682(typescript@5.7.2)
       cli-table:
         specifier: ^0.3.11
         version: 0.3.11
@@ -32,6 +38,9 @@ importers:
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@22.10.2)(typescript@5.7.2)
+      zod:
+        specifier: ^3.24.1
+        version: 3.24.1
     devDependencies:
       '@types/cli-table':
         specifier: ^0.3.4
@@ -806,6 +815,17 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@trpc/client@11.0.0-rc.682':
+    resolution: {integrity: sha512-zfM6t4tkbQPm/FHK85jcJjJle7FJTj9U8t/ieDzIe3X6DNo66sg6KqQpjkeTJcaj5u2hga1lmv3rc4uob/7D0g==}
+    peerDependencies:
+      '@trpc/server': 11.0.0-rc.682+8650a22e8
+      typescript: '>=5.7.2'
+
+  '@trpc/server@11.0.0-rc.682':
+    resolution: {integrity: sha512-y8FhLW/UJ8SOyHByvSQW7WvCnbvYioOYhviWD+sRvqkB9f0O8/sEBPJt1mBadWaO/0tygOghkeNC9o1wAsJ8cg==}
+    peerDependencies:
+      typescript: '>=5.7.2'
+
   '@tsconfig/node10@1.0.11':
     resolution: {integrity: sha512-DcRjDCujK/kCk/cUe8Xz8ZSpm8mS3mNNpta+jGCA6USEDfktlNvm1+IuZ9eTcDbNk41BHwpHHeW+N1lKCz4zOw==}
 
@@ -1428,6 +1448,9 @@ packages:
     resolution: {integrity: sha512-cYVsTjKl8b+FrnidjibDWskAv7UKOfcwaVZdp/it9n1s9fU3IkgDbhdIRKCW4JDsAlECJY0ytoVPT3sK6kideA==}
     engines: {node: '>=18'}
 
+  zod@3.24.1:
+    resolution: {integrity: sha512-muH7gBL9sI1nciMZV67X5fTKKBLtwpZ5VBp1vsOQzj1MhrBZ4wlVCm3gedKZWLp0Oyel8sIGfeiz54Su+OVT+A==}
+
 snapshots:
 
   '@cspotcode/source-map-support@0.8.1':
@@ -1893,6 +1916,15 @@ snapshots:
 
   '@rollup/rollup-win32-x64-msvc@4.29.1':
     optional: true
+
+  '@trpc/client@11.0.0-rc.682(@trpc/server@11.0.0-rc.682(typescript@5.7.2))(typescript@5.7.2)':
+    dependencies:
+      '@trpc/server': 11.0.0-rc.682(typescript@5.7.2)
+      typescript: 5.7.2
+
+  '@trpc/server@11.0.0-rc.682(typescript@5.7.2)':
+    dependencies:
+      typescript: 5.7.2
 
   '@tsconfig/node10@1.0.11': {}
 
@@ -2481,3 +2513,5 @@ snapshots:
   yn@3.1.1: {}
 
   yoctocolors-cjs@2.1.2: {}
+
+  zod@3.24.1: {}
