@@ -1,5 +1,6 @@
-import { expect, test } from "bun:test";
+// sum.test.js
+import { expect, test } from 'vitest'
 
-test("2 + 2", () => {
-    expect(2 + 2).toBe(4);
+test('adds 1 + 2 to equal 3', () => {
+    expect(1 + 2).toBe(3)
 });
