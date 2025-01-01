@@ -1,7 +1,6 @@
 import net from 'net';
 import { EventEmitter } from '../ts-utils/event-emitter';
 import { z } from 'zod';
-import { Webhook } from '../structs/webhook';
 
 type StructEvent = {
     struct: string;
@@ -10,14 +9,20 @@ type StructEvent = {
 };
 
 export type Events = {
-    connect: void;
+    connect: string;
     disconnect: void;
     struct: StructEvent;
 };
 
+export type ClientEvents = {
+    connect: undefined;
+    disconnect: void;
+    struct: StructEvent;
+}
+
 
 class Connection {
-    private readonly emitter = new EventEmitter<Events>();
+    private readonly emitter = new EventEmitter();
 
     private readonly buffer: {
         event: string;
@@ -93,8 +98,8 @@ class Connection {
         this.emitter.emit('disconnect', undefined);
     }
 
-    listen<T extends keyof Events>(event: T, listener: (data: Events[T]) => void, zod?: z.ZodType<Events[T]>) {
-        const run = (data: Events[T]) => {
+    listen<T extends unknown>(event: string, listener: (data: T) => void, zod?: z.ZodType<T>) {
+        const run = (data: T) => {
             try {
                 if (zod) {
                     const typed = zod.parse(data);
@@ -108,9 +113,9 @@ class Connection {
             }
         }
 
-        this.emitter.on(event, run);
+        this.emitter.on(event, run as (data: unknown) => void);
 
-        return () => this.emitter.off(event, run);
+        return () => this.emitter.off(event, run as (data: unknown) => void);
     }
 
     private setupSocketListeners() {
@@ -205,12 +210,12 @@ export class Server {
 
                     if (typed.event === 'connect') {
                         const apiKey = z.string().parse(typed.data);
-                        const valid = (await Webhook.get(apiKey)).unwrap();
-                        if (!valid) {
-                            socket.write(JSON.stringify({ event: 'error', data: 'Invalid API key' }));
-                            socket.destroy();
-                            return;
-                        }
+                        // const valid = (await Webhook.get(apiKey)).unwrap();
+                        // if (!valid) {
+                        //     socket.write(JSON.stringify({ event: 'error', data: 'Invalid API key' }));
+                        //     socket.destroy();
+                        //     return;
+                        // }
                         // Check if a connection already exists
                         connection = this.connections.get(apiKey);
                         if (connection) {
@@ -237,6 +242,7 @@ export class Server {
         const has = this.connections.get(apiKey);
         if (has) return has;
         const c = new Connection(socket, apiKey, this);
+        c['emitter'].emit('connect', apiKey);
         this.connections.set(apiKey, c);
         c.listen('disconnect', () => this.connections.delete(apiKey));
         return c;
@@ -261,12 +267,12 @@ export class Server {
     }
 
     private readonly listenCache = new Map<string, {
-        event: keyof Events;
-        listener: (data: Events[keyof Events]) => void;
-        zod?: z.ZodType<Events[keyof Events]>;
+        event: string;
+        listener: (data: unknown) => void;
+        zod?: z.ZodType<unknown>;
     }[]>();
 
-    listenTo<T extends keyof Events>(apiKey: string, event: T, listener: (data: Events[T]) => void, zod?: z.ZodType<Events[T]>) {
+    listenTo<T extends unknown>(apiKey: string, event: string, listener: (data: T) => void, zod?: z.ZodType<T>) {
         const connection = this.connections.get(apiKey);
         if (!connection) {
             const cache = this.listenCache.get(apiKey) ?? [];
@@ -291,7 +297,7 @@ export class Server {
 
 
 export class Client {
-    private readonly emitter = new EventEmitter<Events>();
+    private readonly emitter = new EventEmitter();
     private readonly buffer: {
         event: string;
         data: unknown;
@@ -392,8 +398,8 @@ export class Client {
         this.emitter.emit('disconnect', undefined);
     }
 
-    listen<T extends keyof Events>(event: T, listener: (data: Events[T]) => void, zod?: z.ZodType<Events[T]>) {
-        const run = (data: Events[T]) => {
+    listen<T extends unknown>(event: string, listener: (data: T) => void, zod?: z.ZodType<T>) {
+        const run = (data: T) => {
             try {
                 if (zod) {
                     const typed = zod.parse(data);
@@ -407,9 +413,9 @@ export class Client {
             }
         };
 
-        this.emitter.on(event, run);
+        this.emitter.on(event, run as (data: unknown) => void);
 
-        return () => this.emitter.off(event, run);
+        return () => this.emitter.off(event, run as (data: unknown) => void);
     }
 
     get connected() {

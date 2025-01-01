@@ -1,4 +1,4 @@
-import { Client, Server, type Events } from './tcp';
+import { Client, ClientEvents, Server, type Events } from './tcp';
 import { z } from 'zod';
 import fs from 'fs';
 import path from 'path';
@@ -57,7 +57,14 @@ export class ServerAPI {
             await fs.promises.mkdir(path.join(__dirname, 'api'), { recursive: true });
             await fs.promises.writeFile(this.eventFilePath, '', { flag: 'a' });
 
-            this.listen('connect', () => {
+            this.listen('connect', async (apiKey) => {
+                const info = await Webhook.get(apiKey);
+                if (info.isErr()) return console.error(info);
+
+                if (!info.value) {
+                    return this.send('invalid-api-key', undefined, Date.now());
+                }
+
                 this.replayEvents();
             });
             this.listen('struct', async (data) => {
@@ -77,7 +84,7 @@ export class ServerAPI {
     }
 
     listen<T extends keyof Events>(event: T, cb: (data: Events[T]) => void, zod?: z.ZodType<Events[T]>) {
-        this.server.listenTo(this.apiKey, event, cb, zod);
+        this.server.listenTo(this.apiKey, event, cb as (data: unknown) => void, zod);
     }
 
     async send(event: string, data?: unknown, timestamp?: number) {
@@ -195,7 +202,7 @@ export class ClientAPI {
         });
     }
 
-    listen<T extends keyof Events>(event: T, cb: (data: Events[T]) => void, zod?: z.ZodType<Events[T]>) {
+    listen<T extends keyof ClientEvents>(event: T, cb: (data: ClientEvents[T]) => void, zod?: z.ZodType<ClientEvents[T]>) {
         this.client.listen(event, cb, zod);
     }
 
