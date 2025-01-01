@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { pgTable, text, timestamp, boolean, integer } from 'drizzle-orm/pg-core';
 import type { PgColumnBuilderBase, PgTableWithColumns } from 'drizzle-orm/pg-core';
-import { sql, type BuildColumns } from 'drizzle-orm';
+import { ColumnTypeConfig, sql, type BuildColumns } from 'drizzle-orm';
 import { attempt, attemptAsync, resolveAll, type Result } from './ts-utils/check';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { type ColumnDataType } from 'drizzle-orm';
@@ -10,6 +10,9 @@ import { Loop } from './ts-utils/loop';
 import { uuid } from './utils/uuid';
 import { Stream } from './ts-utils/stream';
 import { match } from './ts-utils/match';
+import { Client } from './utils/tcp';
+import { ClientAPI, ServerAPI } from './utils/api';
+import { z } from 'zod';
 
 export const checkStrType = (str: string, type: ColumnDataType): boolean => {
     switch (type) {
@@ -104,13 +107,14 @@ export type StructBuilder<T extends Blank, Name extends string> = {
         amount: number;
     };
     universeLimit?: number;
-    // This is so the struct isn't actually saved in the database, it 'reflects' a different server's data
+    // This is so the struct isn't actually permanently in the database, it 'reflects' a different server's data
     // If there are merge conflicts, it will always prioritize the other server's data
     // It will still save in the local database for optimization purposes
     // If there are type conflicts, they are incompatible, so it will throw an error
     reflect?: {
-        webhook: string;
-        headers: Record<string, string>;
+        address: string;
+        port: number;
+        key: string;
         // How often it should sync with the other server
         // it will first send a hash of the data, and if the other server doesn't have that hash, the other server will pipe the data
         interval: number;
@@ -185,20 +189,24 @@ export class DataVersion<T extends Blank, Name extends string> {
         return this.struct.database;
     }
 
-    delete() {
+    delete(config?: {
+        emit?: false;
+    }) {
         return attemptAsync(async () => {
             if (!this.struct.versionTable) throw new StructError(`Struct ${this.struct.name} does not have a version table`);
             await this.database.delete(this.struct.versionTable).where(sql`${this.struct.versionTable.vhId} = ${this.vhId}`);
-            this.struct.emit('delete-version', this);
+            if (config?.emit !== undefined) this.struct.emit('delete-version', this);
         });
     }
 
-    restore() {
+    restore(config?: {
+        emit?: false;
+    }) {
         return attemptAsync(async () => {
             const data = (await this.struct.fromId(this.id)).unwrap();
             if (!data) this.struct.new(this.data);
             else await data.update(this.data);
-            this.struct.emit('restore-version', this);
+            if (config?.emit !== undefined) this.struct.emit('restore-version', this);
         });
     }
 }
@@ -230,8 +238,15 @@ export class StructData<T extends Blank = any, Name extends string = any> {
         return this.data.lifetime;
     }
 
-    update(data: Partial<Structable<T>>) {
+    update(data: Partial<Structable<T>>, config?: {
+        emit?: false;
+    }) {
         return attemptAsync(async () => {
+            if (!this.struct.validate(this.data, {
+                optionals: Object.keys(globalCols) as string[]
+            })) {
+                throw new DataError('Invalid Data');
+            }
             this.makeVersion();
             const newData: any = { ...this.data, ...data };
 
@@ -247,25 +262,36 @@ export class StructData<T extends Blank = any, Name extends string = any> {
                 ...newData,
                 updated: new Date(),
             }).where(sql`${this.struct.table.id} = ${this.id}`);
+
+            if (config?.emit !== undefined) this.struct.eventEmitter.emit('update', this);
         });
     }
 
-    setArchive(archived: boolean) {
+    setArchive(archived: boolean, config?: {
+        emit?: false;
+    }) {
         return attemptAsync(async () => {
             await this.struct.database.update(this.struct.table).set({
                 archived,
                 updated: new Date(),
             } as any).where(sql`${this.struct.table.id} = ${this.id}`);
+
+            if (config?.emit !== undefined) this.struct.eventEmitter.emit(archived ? 'archive' : 'restore', this);
         });
     }
 
-    delete() {
+    delete(config?: {
+        emit?: false;
+    }) {
         return attemptAsync(async () => {
             this.makeVersion();
             await this.database.delete(this.struct.table).where(sql`${this.struct.table.id} = ${this.id}`);
+            if (config?.emit !== undefined) this.struct.eventEmitter.emit('delete', this);
         });
     }
 
+
+    // TODO: events for make version
     makeVersion() {
         return attemptAsync(async () => {
             if (!this.struct.versionTable) throw new StructError(`Struct ${this.struct.name} does not have a version table`);
@@ -305,6 +331,7 @@ export class StructData<T extends Blank = any, Name extends string = any> {
         });
     }
 
+    // TODO: events for attributes and universes
     getAttributes() {
         return attempt(() => {
             const a = JSON.parse(this.data.attributes);
@@ -474,10 +501,10 @@ export class Struct<T extends Blank = any, Name extends string = any> {
     public readonly versionTable?: Table<T & typeof globalCols & typeof versionGlobalCols, Name>;
     public readonly eventEmitter = new EventEmitter<StructEvents<T, Name>>();
 
-    public on = this.eventEmitter.on.bind(this.eventEmitter);
-    public once = this.eventEmitter.once.bind(this.eventEmitter);
-    public off = this.eventEmitter.off.bind(this.eventEmitter);
-    public emit = this.eventEmitter.emit.bind(this.eventEmitter);
+    public readonly on = this.eventEmitter.on.bind(this.eventEmitter);
+    public readonly once = this.eventEmitter.once.bind(this.eventEmitter);
+    public readonly off = this.eventEmitter.off.bind(this.eventEmitter);
+    public readonly emit = this.eventEmitter.emit.bind(this.eventEmitter);
 
     public loop?: Loop;
     public built = false;
@@ -514,23 +541,32 @@ export class Struct<T extends Blank = any, Name extends string = any> {
         throw new Error('Struct.sample should never be called at runtime, it is only used for testing');
     }
 
-    new(data: Structable<T>) {
+    new(data: Structable<T>, config?: {
+        emit?: false;
+        ignoreGlobals?: boolean;
+    }) {
         return attemptAsync(async () => {
-            const newData: Structable<T & typeof globalCols> = {
-                ...data,
-                id: uuid(),
+            this.validate(data, {
+                optionals: config?.ignoreGlobals ? [] : Object.keys(globalCols) as string[],
+            });
+            const globals = {
+                id: this.data.generators?.id?.() ?? uuid(),
                 created: new Date(),
                 updated: new Date(),
                 archived: false,
                 universes: '',
-                attributes: '',
+                attributes: JSON.stringify(this.data.generators?.attributes?.() ?? []),
                 lifetime: 0,
+            }
+            const newData: Structable<T & typeof globalCols> = {
+                ...data,
+                ...(!config?.ignoreGlobals ? globals : {}),
             };
 
             await this.database.insert(this.table).values(newData as any);
 
             const d = this.Generator(newData);
-            this.eventEmitter.emit('create', d);
+            if (config?.emit !== undefined) this.eventEmitter.emit('create', d);
 
             return d;
         });
@@ -892,15 +928,44 @@ export class Struct<T extends Blank = any, Name extends string = any> {
         
         const keys = Object.keys(data);
 
-        for (const main in this.data.structure) {
-            if (config?.not?.includes(main as any) && keys.includes(main)) return false;
-            if (config?.optionals?.includes(main) && !keys.includes(main)) continue;
-            if (!keys.includes(main)) return false;
-            // drizzle's type during compile and runtime are different, '_' at compile is 'config' at runtime
-            if (typeof (data as any)[main] !== ((this.data.structure[main] as any).config.dataType as ColumnDataType)) return false;
+        if (config?.not) {
+            for (const n of config.not) {
+                if (keys.includes(n)) return false;
+            }
         }
 
-        return true;
+        try {
+            z.object({
+                id: config?.optionals?.includes('id') ? z.string().optional() : z.string(),
+                created: config?.optionals?.includes('created') ? z.date().optional() : z.date(),
+                updated: config?.optionals?.includes('updated') ? z.date().optional() : z.date(),
+                archived: config?.optionals?.includes('archived') ? z.boolean().optional() : z.boolean(),
+                universes: config?.optionals?.includes('universes') ? z.string().optional() : z.string(),
+                attributes: config?.optionals?.includes('attributes') ? z.string().optional() : z.string(),
+                lifetime: config?.optionals?.includes('lifetime') ? z.number().optional() : z.number(),
+                ...Object.fromEntries(Object.entries(this.data.structure).map(([k, v]) => {
+                    const optional = !!config?.optionals?.includes(k);
+                    const type = (v as any).config.dataType as ColumnDataType;
+    
+                    switch (type) {
+                        case 'number':
+                            return [k, optional ? z.number().optional() : z.number()];
+                        case 'string':
+                            return [k, optional ? z.string().optional() : z.string()];
+                        case 'boolean':
+                            return [k, optional ? z.boolean().optional() : z.boolean()];
+                        case 'date':
+                            return [k, optional ? z.date().optional() : z.date()];
+                        default:
+                            throw new DataError(`Invalid data type: ${type} in ${k} of ${this.name}`);
+                    }
+                })),
+            }).parse(data);
+            return true;
+    
+        } catch (error) {
+            return false;
+        }
     }
 
     hash() {
@@ -918,24 +983,88 @@ export class Struct<T extends Blank = any, Name extends string = any> {
         });
     }
 
-    reflect(path: string, body: unknown) {
-        const { reflect } = this.data;
-        if (!reflect) throw new FatalStructError('Cannot reflect a struct that does not have a reflect config');
-        return attemptAsync(async () => {
-            const { webhook, headers } = reflect;
-            if (!path.startsWith('/')) throw new FatalStructError('Path must start with /');
-            const response = await fetch(webhook + path, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    ...headers,
-                },
-                body: JSON.stringify(body),
+    startReflection(API: ClientAPI | ServerAPI) {
+        return attempt(() => {
+            let connected = false;
+            if (API instanceof ClientAPI) {
+                const { reflect } = this.data;
+                if (!reflect) return;
+
+                API.client.listen('connect', () => connected = true);
+                API.client.listen('disconnect', () => {
+                    connected = false;
+                });
+            } else {
+                // ServerAPI
+            }
+
+            // TODO: this will create an infinite loop because the other server is also reflecting
+
+            this.on('archive', (d) => API.send('archive', d.id));
+            // this.on('build', (d) => API.send('build'));
+            this.on('create', (d) => API.send('create', d.safe()));
+            this.on('delete', (d) => API.send('delete', d.id));
+            this.on('delete-version', (d) => API.send('delete-version', d.vhId));
+            this.on('restore', (d) => API.send('restore', d.id));
+            this.on('restore-version', (d) => API.send('restore-version', d.vhId));
+            this.on('update', (d) => API.send('update', d.safe()));
+
+            const em = API.createEmitter(this);
+
+            em.on('archive', async ({ id }) => {
+                const data = (await this.fromId(id)).unwrap();
+                if (!data) return;
+                await data.setArchive(true);
             });
-
-            if (!response.ok) throw new Error('Failed to reflect');
-
-            return response;
+            // em.on('build', async ({ struct }) => built = true);
+            em.on('create', async (data) => {
+                (await (this.new(data, {
+                    emit: false,
+                    ignoreGlobals: true,
+                }))).unwrap();
+            });
+            em.on('delete', async ({ id }) => {
+                const data = (await this.fromId(id)).unwrap();
+                if (!data) return;
+                (await data.delete({
+                    emit: false,
+                })).unwrap();
+            });
+            em.on('delete-version', async ({ vhId, id }) => {
+                const data = (await this.fromId(id)).unwrap();
+                if (!data) return;
+                const versions = (await data.getVersions()).unwrap();
+                const version = versions.find(v => v.vhId === vhId);
+                if (!version) return;
+                (await version.delete({
+                    emit: false,
+                })).unwrap();
+            });
+            em.on('restore', async ({ id }) => {
+                const data = (await this.fromId(id)).unwrap();
+                if (!data) return;
+                (await data.setArchive(false, {
+                    emit: false
+                })).unwrap();
+            });
+            em.on('restore-version', async ({ vhId, id }) => {
+                const data = (await this.fromId(id)).unwrap();
+                if (!data) return;
+                const versions = (await data.getVersions()).unwrap();
+                const version = versions.find(v => v.vhId === vhId);
+                if (!version) return;
+                (await version.restore({
+                    emit: false,
+                })).unwrap();
+            });
+            em.on('update', async (data) => {
+                const id = z.string().parse(data.id);
+                const d = (await this.fromId(id)).unwrap();
+                if (!d) return;
+                (await d.update(data, {
+                    emit: false,
+                })).unwrap();
+            });
         });
     }
 

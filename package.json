@@ -22,6 +22,7 @@
     "cli-table": "^0.3.11",
     "dotenv": "^16.4.7",
     "drizzle-orm": "^0.38.3",
+    "drizzle-zod": "^0.6.1",
     "fuzzy-search": "^3.2.1",
     "pg": "^8.13.1",
     "postgres": "^3.4.5",

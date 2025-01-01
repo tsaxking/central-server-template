@@ -5,12 +5,14 @@ import { Webhook } from '../structs/webhook';
 
 type StructEvent = {
     struct: string;
+    event: string;
     data: string;
 };
 
 export type Events = {
     connect: void;
     disconnect: void;
+    struct: StructEvent;
 };
 
 
@@ -98,7 +100,7 @@ class Connection {
                     const typed = zod.parse(data);
                     listener(typed);
                 } else {
-                    if (data === undefined) listener(undefined);
+                    if (data === undefined) listener(data);
                     else console.log('Did not pass zod into an event handler where data is being used.');
                 }
             } catch (e) {
@@ -268,7 +270,11 @@ export class Server {
         const connection = this.connections.get(apiKey);
         if (!connection) {
             const cache = this.listenCache.get(apiKey) ?? [];
-            cache.push({ event, listener, zod });
+            cache.push({ 
+                event, 
+                listener: listener as any, 
+                zod,
+            });
             this.listenCache.set(apiKey, cache);
             return;
         }
@@ -393,7 +399,7 @@ export class Client {
                     const typed = zod.parse(data);
                     listener(typed);
                 } else {
-                    if (data === undefined) listener(undefined);
+                    if (data === undefined) listener(data);
                     else console.log('Did not pass zod into an event handler where data is being used.', event, data);
                 }
             } catch (e) {

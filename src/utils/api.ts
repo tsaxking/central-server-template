@@ -5,7 +5,19 @@ import path from 'path';
 import { attemptAsync } from '../ts-utils/check';
 import { decode, encode } from '../ts-utils/text';
 import { lock } from 'proper-lockfile';
-
+import { EventEmitter } from '../ts-utils/event-emitter';
+import { Blank, Struct, Structable } from '../struct';
+import { Webhook } from '../structs/webhook';
+type StructEvents<T extends Blank> = {
+    'archive': { id: string };
+    'build': { struct: string; };
+    'create': Structable<T>;
+    'delete': { id: string; };
+    'delete-version': { vhId: string; id: string; };
+    'restore': { id: string; };
+    'restore-version': { vhId: string; id: string; };
+    'update': Partial<Structable<T>>;
+};
 class EventFileManager {
     private static streams: Map<string, fs.WriteStream> = new Map();
 
@@ -47,6 +59,19 @@ export class ServerAPI {
 
             this.listen('connect', () => {
                 this.replayEvents();
+            });
+            this.listen('struct', async (data) => {
+                const info = (await Webhook.get(this.apiKey)).unwrap();
+                if (!info) return console.error('Webhook not found');
+
+                if (info.permissions.some(p => p.data.struct === data.struct && p.data.permission === data.event)) {
+                    const emitter = this.structEmitters.get(data.struct);
+                    if (emitter) {
+                        emitter.emit(data.event as any, data.data);
+                    }
+                } else {
+                    console.error('Permission denied');
+                }
             });
         });
     }
@@ -103,7 +128,19 @@ export class ServerAPI {
             await lockRelease();
         }
     }
+    private structEmitters: Map<string, EventEmitter<StructEvents<Blank>>> = new Map();
+
+    createEmitter<S extends Struct>(struct: S) {
+        const em = new EventEmitter<StructEvents<S['data']['structure']>>();
+        if (!!this.structEmitters.get(struct.name)) {
+            throw new Error(`Emitter for struct ${struct.name} already exists`);
+        }
+        this.structEmitters.set(struct.name, em);
+        return em;
+    }
 }
+
+
 
 export class ClientAPI {
     private readonly eventFilePath: string;
@@ -122,6 +159,38 @@ export class ClientAPI {
 
             this.listen('connect', () => {
                 this.replayEvents();
+            });
+
+            this.listen('struct', (data) => {
+                try {
+                    const emitter = this.structEmitters.get(data.struct);
+                    if (emitter) {
+                        let obj: any;
+                        switch (data.event) {
+                            case 'archive':
+                            case 'restore':
+                            case 'delete':
+                                obj = z.object({ id: z.string() }).parse(data.data);
+                                break;
+                            case 'build':
+                                obj = z.object({ struct: z.string() }).parse(data.data);
+                                break;
+                            case 'create':
+                            case 'update':
+                                obj = data.data; // will be validated by the struct
+                                break;
+                            case 'restore-version':
+                            case 'delete-version':
+                                obj = z.object({ vhId: z.string(), id: z.string() }).parse(data.data);
+                                break;
+                            default:
+                                throw new Error(`Unknown struct event: ${data}`);
+                        }
+                        emitter.emit(data.event as any, obj);
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
             });
         });
     }
@@ -177,5 +246,16 @@ export class ClientAPI {
         } finally {
             await lockRelease();
         }
+    }
+
+    private structEmitters: Map<string, EventEmitter<StructEvents<Blank>>> = new Map();
+
+    createEmitter<S extends Struct>(struct: S) {
+        const em = new EventEmitter<StructEvents<S['data']['structure']>>();
+        if (!!this.structEmitters.get(struct.name)) {
+            throw new Error(`Emitter for struct ${struct.name} already exists`);
+        }
+        this.structEmitters.set(struct.name, em);
+        return em;
     }
 }
