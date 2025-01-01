@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import net from 'net';
 import { EventEmitter } from '../ts-utils/event-emitter';
 import { z } from 'zod';
@@ -98,12 +99,21 @@ class Connection {
         this.emitter.emit('disconnect', undefined);
     }
 
-    listen<T extends unknown>(event: string, listener: (data: T) => void, zod?: z.ZodType<T>) {
-        const run = (data: T) => {
+    listen<T = unknown>(event: string, listener: (data: {
+        data: T;
+        timestamp: number;
+    }) => void, zod?: z.ZodType<T>) {
+        const run = (data: {
+            data: T;
+            timestamp: number;
+        }) => {
             try {
                 if (zod) {
-                    const typed = zod.parse(data);
-                    listener(typed);
+                    const typed = zod.parse(data.data);
+                    listener({
+                        data: typed,
+                        timestamp: data.timestamp,
+                    });
                 } else {
                     if (data === undefined) listener(data);
                     else console.log('Did not pass zod into an event handler where data is being used.');
@@ -166,10 +176,10 @@ export class Server {
             let numTries = 0; // Keep track of the retry attempts
             const maxRetries = 5; // Maximum number of retries
             const maxBackoffDelay = 10000; // Maximum backoff delay in milliseconds (10 seconds)
-            const buffer: {
-                event: string;
-                data?: unknown;
-            }[] = [];
+            // const buffer: {
+            //     event: string;
+            //     data?: unknown;
+            // }[] = [];
 
             const reconnect = () => {
                 if (connection) connection['_connected'] = false;
@@ -272,7 +282,7 @@ export class Server {
         zod?: z.ZodType<unknown>;
     }[]>();
 
-    listenTo<T extends unknown>(apiKey: string, event: string, listener: (data: T) => void, zod?: z.ZodType<T>) {
+    listenTo<T = unknown>(apiKey: string, event: string, listener: (data: { data: T; timestamp: number; }) => void, zod?: z.ZodType<T>) {
         const connection = this.connections.get(apiKey);
         if (!connection) {
             const cache = this.listenCache.get(apiKey) ?? [];
@@ -398,12 +408,15 @@ export class Client {
         this.emitter.emit('disconnect', undefined);
     }
 
-    listen<T extends unknown>(event: string, listener: (data: T) => void, zod?: z.ZodType<T>) {
-        const run = (data: T) => {
+    listen<T = unknown>(event: string, listener: (data: { data: T, timestamp: number }) => void, zod?: z.ZodType<T>) {
+        const run = (data: { data: T, timestamp: number }) => {
             try {
                 if (zod) {
-                    const typed = zod.parse(data);
-                    listener(typed);
+                    const typed = zod.parse(data.data);
+                    listener({
+                        data: typed,
+                        timestamp: data.timestamp,
+                    });
                 } else {
                     if (data === undefined) listener(data);
                     else console.log('Did not pass zod into an event handler where data is being used.', event, data);
