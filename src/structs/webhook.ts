@@ -1,6 +1,6 @@
 import { text } from "drizzle-orm/pg-core";
-import { Struct } from "../struct";
-import { attemptAsync } from "../ts-utils/check";
+import { Struct } from "drizzle-struct/back-end";
+import { attemptAsync } from "ts-utils/check";
 
 export namespace Webhook {
     export const Webhook = new Struct({
