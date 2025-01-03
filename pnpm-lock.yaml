@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@inquirer/prompts':
         specifier: ^7.2.1
-        version: 7.2.1(@types/node@22.10.3)
+        version: 7.2.1(@types/node@22.10.4)
       '@trpc/client':
         specifier: 11.0.0-rc.682
         version: 11.0.0-rc.682(@trpc/server@11.0.0-rc.682(typescript@5.7.2))(typescript@5.7.2)
@@ -25,13 +25,13 @@ importers:
         version: 16.4.7
       drizzle-orm:
         specifier: ^0.38.3
-        version: 0.38.3(@types/pg@8.11.10)(bun-types@1.1.37)(pg@8.13.1)(postgres@3.4.5)
+        version: 0.38.3(@types/pg@8.11.10)(pg@8.13.1)(postgres@3.4.5)
       drizzle-struct:
-        specifier: github:tsaxking/drizzle-struct#semver:v1.0.1
-        version: https://codeload.github.com/tsaxking/drizzle-struct/tar.gz/75c943eea5834cc43f0e65762cd07ff0e6608b46(@types/node@22.10.3)(@types/pg@8.11.10)(bun-types@1.1.37)(typescript@5.7.2)
+        specifier: git+https://github.com/tsaxking/drizzle-struct.git
+        version: https://codeload.github.com/tsaxking/drizzle-struct/tar.gz/703cfcb82863c59c71ba9266748505f1e766ad0d(@types/node@22.10.4)(@types/pg@8.11.10)
       drizzle-zod:
         specifier: ^0.6.1
-        version: 0.6.1(drizzle-orm@0.38.3(@types/pg@8.11.10)(bun-types@1.1.37)(pg@8.13.1)(postgres@3.4.5))(zod@3.24.1)
+        version: 0.6.1(drizzle-orm@0.38.3(@types/pg@8.11.10)(pg@8.13.1)(postgres@3.4.5))(zod@3.24.1)
       fuzzy-search:
         specifier: ^3.2.1
         version: 3.2.1
@@ -49,10 +49,10 @@ importers:
         version: 4.1.2
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@types/node@22.10.3)(typescript@5.7.2)
+        version: 10.9.2(@types/node@22.10.4)(typescript@5.7.2)
       ts-utils:
         specifier: git+https://github.com/tsaxking/global-ts-utilities.git
-        version: global-ts-utilities.git@https://codeload.github.com/tsaxking/global-ts-utilities/tar.gz/38893cf5725d9eef050e811f37e89da89ed00bd7
+        version: https://codeload.github.com/tsaxking/global-ts-utilities/tar.gz/78515545075c95c433dc44d6bae801e1737f56db
       zod:
         specifier: ^3.24.1
         version: 3.24.1
@@ -77,7 +77,7 @@ importers:
         version: 4.19.2
       vitest:
         specifier: ^2.1.8
-        version: 2.1.8(@types/node@22.10.3)
+        version: 2.1.8(@types/node@22.10.4)
 
 packages:
 
@@ -880,11 +880,8 @@ packages:
   '@types/fuzzy-search@2.1.5':
     resolution: {integrity: sha512-Yw8OsjhVKbKw83LMDOZ9RXc+N+um48DmZYMrz7QChpHkQuygsc5O40oCL7SfvWgpaaviCx2TbNXYUBwhMtBH5w==}
 
-  '@types/node@20.12.14':
-    resolution: {integrity: sha512-scnD59RpYD91xngrQQLGkE+6UrHUPzeKZWhhjBSa3HSkwjbQc38+q3RoIVEwxQGRw3M+j5hpNAM+lgV3cVormg==}
-
-  '@types/node@22.10.3':
-    resolution: {integrity: sha512-DifAyw4BkrufCILvD3ucnuN8eydUfc/C1GlyrnI+LK6543w5/L3VeVgf05o3B4fqSXP1dKYLOZsKfutpxPzZrw==}
+  '@types/node@22.10.4':
+    resolution: {integrity: sha512-99l6wv4HEzBQhvaU/UGoeBoCK61SCROQaCCGyQSgX2tEQ3rKkNZ2S7CEWnS/4s1LV+8ODdK21UeyR1fHP2mXug==}
 
   '@types/pg@8.11.10':
     resolution: {integrity: sha512-LczQUW4dbOQzsH2RQ5qoeJ6qJPdrcM/DcMLoqWQkMLMsq83J5lAX3LXjdkWdpscFy67JSOWDnh7Ny/sPFykmkg==}
@@ -894,9 +891,6 @@ packages:
 
   '@types/retry@0.12.5':
     resolution: {integrity: sha512-3xSjTp3v03X/lSQLkczaN9UIEwJMoMCA1+Nb5HfbJEQWogdeQIyVtTvxPXDQjZ5zws8rFQfVfRdz03ARihPJgw==}
-
-  '@types/ws@8.5.13':
-    resolution: {integrity: sha512-osM/gWBTPKgHV8XkTunnegTRIsvF6owmf5w+JtAfOw472dptdm0dlGv4xCt6GwQRcC2XVOvvRE/0bAoQcL2QkA==}
 
   '@vitest/expect@2.1.8':
     resolution: {integrity: sha512-8ytZ/fFHq2g4PJVAtDX57mayemKgDR6X3Oa2Foro+EygiOJHUXhCqBAAKQYYajZpFoIfvBCF1j6R6IYRSIUFuw==}
@@ -971,9 +965,6 @@ packages:
   buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
 
-  bun-types@1.1.37:
-    resolution: {integrity: sha512-C65lv6eBr3LPJWFZ2gswyrGZ82ljnH8flVE03xeXxKhi2ZGtFiO4isRKTKnitbSqtRAcaqYSR6djt1whI66AbA==}
-
   cac@6.7.14:
     resolution: {integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==}
     engines: {node: '>=8'}
@@ -1043,6 +1034,98 @@ packages:
   drizzle-kit@0.30.1:
     resolution: {integrity: sha512-HmA/NeewvHywhJ2ENXD3KvOuM/+K2dGLJfxVfIHsGwaqKICJnS+Ke2L6UcSrSrtMJLJaT0Im1Qv4TFXfaZShyw==}
     hasBin: true
+
+  drizzle-orm@0.36.4:
+    resolution: {integrity: sha512-1OZY3PXD7BR00Gl61UUOFihslDldfH4NFRH2MbP54Yxi0G/PKn4HfO65JYZ7c16DeP3SpM3Aw+VXVG9j6CRSXA==}
+    peerDependencies:
+      '@aws-sdk/client-rds-data': '>=3'
+      '@cloudflare/workers-types': '>=3'
+      '@electric-sql/pglite': '>=0.2.0'
+      '@libsql/client': '>=0.10.0'
+      '@libsql/client-wasm': '>=0.10.0'
+      '@neondatabase/serverless': '>=0.10.0'
+      '@op-engineering/op-sqlite': '>=2'
+      '@opentelemetry/api': ^1.4.1
+      '@planetscale/database': '>=1'
+      '@prisma/client': '*'
+      '@tidbcloud/serverless': '*'
+      '@types/better-sqlite3': '*'
+      '@types/pg': '*'
+      '@types/react': '>=18'
+      '@types/sql.js': '*'
+      '@vercel/postgres': '>=0.8.0'
+      '@xata.io/client': '*'
+      better-sqlite3: '>=7'
+      bun-types: '*'
+      expo-sqlite: '>=14.0.0'
+      knex: '*'
+      kysely: '*'
+      mysql2: '>=2'
+      pg: '>=8'
+      postgres: '>=3'
+      prisma: '*'
+      react: '>=18'
+      sql.js: '>=1'
+      sqlite3: '>=5'
+    peerDependenciesMeta:
+      '@aws-sdk/client-rds-data':
+        optional: true
+      '@cloudflare/workers-types':
+        optional: true
+      '@electric-sql/pglite':
+        optional: true
+      '@libsql/client':
+        optional: true
+      '@libsql/client-wasm':
+        optional: true
+      '@neondatabase/serverless':
+        optional: true
+      '@op-engineering/op-sqlite':
+        optional: true
+      '@opentelemetry/api':
+        optional: true
+      '@planetscale/database':
+        optional: true
+      '@prisma/client':
+        optional: true
+      '@tidbcloud/serverless':
+        optional: true
+      '@types/better-sqlite3':
+        optional: true
+      '@types/pg':
+        optional: true
+      '@types/react':
+        optional: true
+      '@types/sql.js':
+        optional: true
+      '@vercel/postgres':
+        optional: true
+      '@xata.io/client':
+        optional: true
+      better-sqlite3:
+        optional: true
+      bun-types:
+        optional: true
+      expo-sqlite:
+        optional: true
+      knex:
+        optional: true
+      kysely:
+        optional: true
+      mysql2:
+        optional: true
+      pg:
+        optional: true
+      postgres:
+        optional: true
+      prisma:
+        optional: true
+      react:
+        optional: true
+      sql.js:
+        optional: true
+      sqlite3:
+        optional: true
 
   drizzle-orm@0.38.3:
     resolution: {integrity: sha512-w41Y+PquMpSff/QDRGdItG0/aWca+/J3Sda9PPGkTxBtjWQvgU1jxlFBXdjog5tYvTu58uvi3PwR1NuCx0KeZg==}
@@ -1136,8 +1219,8 @@ packages:
       sqlite3:
         optional: true
 
-  drizzle-struct@https://codeload.github.com/tsaxking/drizzle-struct/tar.gz/75c943eea5834cc43f0e65762cd07ff0e6608b46:
-    resolution: {tarball: https://codeload.github.com/tsaxking/drizzle-struct/tar.gz/75c943eea5834cc43f0e65762cd07ff0e6608b46}
+  drizzle-struct@https://codeload.github.com/tsaxking/drizzle-struct/tar.gz/703cfcb82863c59c71ba9266748505f1e766ad0d:
+    resolution: {tarball: https://codeload.github.com/tsaxking/drizzle-struct/tar.gz/703cfcb82863c59c71ba9266748505f1e766ad0d}
     version: 1.0.0
 
   drizzle-zod@0.6.1:
@@ -1204,10 +1287,6 @@ packages:
 
   get-tsconfig@4.8.1:
     resolution: {integrity: sha512-k9PN+cFBmaLWtVz29SkUoqU5O0slLuHJXt/2P+tMVFT+phsSGXGkp9t3rQIqdz0e+06EHNGs3oM6ZX1s2zHxRg==}
-
-  global-ts-utilities.git@https://codeload.github.com/tsaxking/global-ts-utilities/tar.gz/38893cf5725d9eef050e811f37e89da89ed00bd7:
-    resolution: {tarball: https://codeload.github.com/tsaxking/global-ts-utilities/tar.gz/38893cf5725d9eef050e811f37e89da89ed00bd7}
-    version: 0.0.0
 
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
@@ -1406,13 +1485,9 @@ packages:
     resolution: {integrity: sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==}
     engines: {node: '>=8'}
 
-  svelte@5.16.0:
-    resolution: {integrity: sha512-Ygqsiac6UogVED2ruKclU+pOeMThxWtp9LG+li7BXeDKC2paVIsRTMkNmcON4Zejerd1s5sZHWx6ZtU85xklVg==}
+  svelte@5.16.1:
+    resolution: {integrity: sha512-FsA1OjAKMAFSDob6j/Tv2ZV9rY4SeqPd1WXQlQkFkePAozSHLp6tbkU9qa1xJ+uTRzMSM2Vx3USdsYZBXd3H3g==}
     engines: {node: '>=18'}
-
-  tcp-api@https://codeload.github.com/tsaxking/tcp-api/tar.gz/012211064c6d99653c8d69860a75bbffcc51e4d3:
-    resolution: {tarball: https://codeload.github.com/tsaxking/tcp-api/tar.gz/012211064c6d99653c8d69860a75bbffcc51e4d3}
-    version: 1.0.0
 
   tinybench@2.9.0:
     resolution: {integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==}
@@ -1450,6 +1525,10 @@ packages:
       '@swc/wasm':
         optional: true
 
+  ts-utils@https://codeload.github.com/tsaxking/global-ts-utilities/tar.gz/78515545075c95c433dc44d6bae801e1737f56db:
+    resolution: {tarball: https://codeload.github.com/tsaxking/global-ts-utilities/tar.gz/78515545075c95c433dc44d6bae801e1737f56db}
+    version: 1.0.0
+
   tsx@4.19.2:
     resolution: {integrity: sha512-pOUl6Vo2LUq/bSa8S5q7b91cgNSjctn9ugq/+Mvow99qW6x/UZYwzxy/3NmqoT66eHYfCVvFvACC58UBPFf28g==}
     engines: {node: '>=18.0.0'}
@@ -1463,9 +1542,6 @@ packages:
     resolution: {integrity: sha512-i5t66RHxDvVN40HfDd1PsEThGNnlMCMT3jMUuoh9/0TaqWevNontacunWyN02LA9/fIbEWlcHZcgTKb9QoaLfg==}
     engines: {node: '>=14.17'}
     hasBin: true
-
-  undici-types@5.26.5:
-    resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
 
   undici-types@6.20.0:
     resolution: {integrity: sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==}
@@ -1864,25 +1940,25 @@ snapshots:
   '@esbuild/win32-x64@0.23.1':
     optional: true
 
-  '@inquirer/checkbox@4.0.4(@types/node@22.10.3)':
+  '@inquirer/checkbox@4.0.4(@types/node@22.10.4)':
     dependencies:
-      '@inquirer/core': 10.1.2(@types/node@22.10.3)
+      '@inquirer/core': 10.1.2(@types/node@22.10.4)
       '@inquirer/figures': 1.0.9
-      '@inquirer/type': 3.0.2(@types/node@22.10.3)
-      '@types/node': 22.10.3
+      '@inquirer/type': 3.0.2(@types/node@22.10.4)
+      '@types/node': 22.10.4
       ansi-escapes: 4.3.2
       yoctocolors-cjs: 2.1.2
 
-  '@inquirer/confirm@5.1.1(@types/node@22.10.3)':
+  '@inquirer/confirm@5.1.1(@types/node@22.10.4)':
     dependencies:
-      '@inquirer/core': 10.1.2(@types/node@22.10.3)
-      '@inquirer/type': 3.0.2(@types/node@22.10.3)
-      '@types/node': 22.10.3
+      '@inquirer/core': 10.1.2(@types/node@22.10.4)
+      '@inquirer/type': 3.0.2(@types/node@22.10.4)
+      '@types/node': 22.10.4
 
-  '@inquirer/core@10.1.2(@types/node@22.10.3)':
+  '@inquirer/core@10.1.2(@types/node@22.10.4)':
     dependencies:
       '@inquirer/figures': 1.0.9
-      '@inquirer/type': 3.0.2(@types/node@22.10.3)
+      '@inquirer/type': 3.0.2(@types/node@22.10.4)
       ansi-escapes: 4.3.2
       cli-width: 4.1.0
       mute-stream: 2.0.0
@@ -1893,82 +1969,82 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@inquirer/editor@4.2.1(@types/node@22.10.3)':
+  '@inquirer/editor@4.2.1(@types/node@22.10.4)':
     dependencies:
-      '@inquirer/core': 10.1.2(@types/node@22.10.3)
-      '@inquirer/type': 3.0.2(@types/node@22.10.3)
-      '@types/node': 22.10.3
+      '@inquirer/core': 10.1.2(@types/node@22.10.4)
+      '@inquirer/type': 3.0.2(@types/node@22.10.4)
+      '@types/node': 22.10.4
       external-editor: 3.1.0
 
-  '@inquirer/expand@4.0.4(@types/node@22.10.3)':
+  '@inquirer/expand@4.0.4(@types/node@22.10.4)':
     dependencies:
-      '@inquirer/core': 10.1.2(@types/node@22.10.3)
-      '@inquirer/type': 3.0.2(@types/node@22.10.3)
-      '@types/node': 22.10.3
+      '@inquirer/core': 10.1.2(@types/node@22.10.4)
+      '@inquirer/type': 3.0.2(@types/node@22.10.4)
+      '@types/node': 22.10.4
       yoctocolors-cjs: 2.1.2
 
   '@inquirer/figures@1.0.9': {}
 
-  '@inquirer/input@4.1.1(@types/node@22.10.3)':
+  '@inquirer/input@4.1.1(@types/node@22.10.4)':
     dependencies:
-      '@inquirer/core': 10.1.2(@types/node@22.10.3)
-      '@inquirer/type': 3.0.2(@types/node@22.10.3)
-      '@types/node': 22.10.3
+      '@inquirer/core': 10.1.2(@types/node@22.10.4)
+      '@inquirer/type': 3.0.2(@types/node@22.10.4)
+      '@types/node': 22.10.4
 
-  '@inquirer/number@3.0.4(@types/node@22.10.3)':
+  '@inquirer/number@3.0.4(@types/node@22.10.4)':
     dependencies:
-      '@inquirer/core': 10.1.2(@types/node@22.10.3)
-      '@inquirer/type': 3.0.2(@types/node@22.10.3)
-      '@types/node': 22.10.3
+      '@inquirer/core': 10.1.2(@types/node@22.10.4)
+      '@inquirer/type': 3.0.2(@types/node@22.10.4)
+      '@types/node': 22.10.4
 
-  '@inquirer/password@4.0.4(@types/node@22.10.3)':
+  '@inquirer/password@4.0.4(@types/node@22.10.4)':
     dependencies:
-      '@inquirer/core': 10.1.2(@types/node@22.10.3)
-      '@inquirer/type': 3.0.2(@types/node@22.10.3)
-      '@types/node': 22.10.3
+      '@inquirer/core': 10.1.2(@types/node@22.10.4)
+      '@inquirer/type': 3.0.2(@types/node@22.10.4)
+      '@types/node': 22.10.4
       ansi-escapes: 4.3.2
 
-  '@inquirer/prompts@7.2.1(@types/node@22.10.3)':
+  '@inquirer/prompts@7.2.1(@types/node@22.10.4)':
     dependencies:
-      '@inquirer/checkbox': 4.0.4(@types/node@22.10.3)
-      '@inquirer/confirm': 5.1.1(@types/node@22.10.3)
-      '@inquirer/editor': 4.2.1(@types/node@22.10.3)
-      '@inquirer/expand': 4.0.4(@types/node@22.10.3)
-      '@inquirer/input': 4.1.1(@types/node@22.10.3)
-      '@inquirer/number': 3.0.4(@types/node@22.10.3)
-      '@inquirer/password': 4.0.4(@types/node@22.10.3)
-      '@inquirer/rawlist': 4.0.4(@types/node@22.10.3)
-      '@inquirer/search': 3.0.4(@types/node@22.10.3)
-      '@inquirer/select': 4.0.4(@types/node@22.10.3)
-      '@types/node': 22.10.3
+      '@inquirer/checkbox': 4.0.4(@types/node@22.10.4)
+      '@inquirer/confirm': 5.1.1(@types/node@22.10.4)
+      '@inquirer/editor': 4.2.1(@types/node@22.10.4)
+      '@inquirer/expand': 4.0.4(@types/node@22.10.4)
+      '@inquirer/input': 4.1.1(@types/node@22.10.4)
+      '@inquirer/number': 3.0.4(@types/node@22.10.4)
+      '@inquirer/password': 4.0.4(@types/node@22.10.4)
+      '@inquirer/rawlist': 4.0.4(@types/node@22.10.4)
+      '@inquirer/search': 3.0.4(@types/node@22.10.4)
+      '@inquirer/select': 4.0.4(@types/node@22.10.4)
+      '@types/node': 22.10.4
 
-  '@inquirer/rawlist@4.0.4(@types/node@22.10.3)':
+  '@inquirer/rawlist@4.0.4(@types/node@22.10.4)':
     dependencies:
-      '@inquirer/core': 10.1.2(@types/node@22.10.3)
-      '@inquirer/type': 3.0.2(@types/node@22.10.3)
-      '@types/node': 22.10.3
+      '@inquirer/core': 10.1.2(@types/node@22.10.4)
+      '@inquirer/type': 3.0.2(@types/node@22.10.4)
+      '@types/node': 22.10.4
       yoctocolors-cjs: 2.1.2
 
-  '@inquirer/search@3.0.4(@types/node@22.10.3)':
+  '@inquirer/search@3.0.4(@types/node@22.10.4)':
     dependencies:
-      '@inquirer/core': 10.1.2(@types/node@22.10.3)
+      '@inquirer/core': 10.1.2(@types/node@22.10.4)
       '@inquirer/figures': 1.0.9
-      '@inquirer/type': 3.0.2(@types/node@22.10.3)
-      '@types/node': 22.10.3
+      '@inquirer/type': 3.0.2(@types/node@22.10.4)
+      '@types/node': 22.10.4
       yoctocolors-cjs: 2.1.2
 
-  '@inquirer/select@4.0.4(@types/node@22.10.3)':
+  '@inquirer/select@4.0.4(@types/node@22.10.4)':
     dependencies:
-      '@inquirer/core': 10.1.2(@types/node@22.10.3)
+      '@inquirer/core': 10.1.2(@types/node@22.10.4)
       '@inquirer/figures': 1.0.9
-      '@inquirer/type': 3.0.2(@types/node@22.10.3)
-      '@types/node': 22.10.3
+      '@inquirer/type': 3.0.2(@types/node@22.10.4)
+      '@types/node': 22.10.4
       ansi-escapes: 4.3.2
       yoctocolors-cjs: 2.1.2
 
-  '@inquirer/type@3.0.2(@types/node@22.10.3)':
+  '@inquirer/type@3.0.2(@types/node@22.10.4)':
     dependencies:
-      '@types/node': 22.10.3
+      '@types/node': 22.10.4
 
   '@jridgewell/gen-mapping@0.3.8':
     dependencies:
@@ -2072,18 +2148,13 @@ snapshots:
 
   '@types/fuzzy-search@2.1.5': {}
 
-  '@types/node@20.12.14':
-    dependencies:
-      undici-types: 5.26.5
-    optional: true
-
-  '@types/node@22.10.3':
+  '@types/node@22.10.4':
     dependencies:
       undici-types: 6.20.0
 
   '@types/pg@8.11.10':
     dependencies:
-      '@types/node': 22.10.3
+      '@types/node': 22.10.4
       pg-protocol: 1.7.0
       pg-types: 4.0.2
 
@@ -2093,11 +2164,6 @@ snapshots:
 
   '@types/retry@0.12.5': {}
 
-  '@types/ws@8.5.13':
-    dependencies:
-      '@types/node': 20.12.14
-    optional: true
-
   '@vitest/expect@2.1.8':
     dependencies:
       '@vitest/spy': 2.1.8
@@ -2105,13 +2171,13 @@ snapshots:
       chai: 5.1.2
       tinyrainbow: 1.2.0
 
-  '@vitest/mocker@2.1.8(vite@5.4.11(@types/node@22.10.3))':
+  '@vitest/mocker@2.1.8(vite@5.4.11(@types/node@22.10.4))':
     dependencies:
       '@vitest/spy': 2.1.8
       estree-walker: 3.0.3
       magic-string: 0.30.17
     optionalDependencies:
-      vite: 5.4.11(@types/node@22.10.3)
+      vite: 5.4.11(@types/node@22.10.4)
 
   '@vitest/pretty-format@2.1.8':
     dependencies:
@@ -2168,12 +2234,6 @@ snapshots:
 
   buffer-from@1.1.2: {}
 
-  bun-types@1.1.37:
-    dependencies:
-      '@types/node': 20.12.14
-      '@types/ws': 8.5.13
-    optional: true
-
   cac@6.7.14: {}
 
   calculations.git@https://codeload.github.com/tsaxking/calculations/tar.gz/e169f626ac0a77ce6f389ea27150be0dadc19dd4: {}
@@ -2227,27 +2287,33 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.38.3(@types/pg@8.11.10)(bun-types@1.1.37)(pg@8.13.1)(postgres@3.4.5):
+  drizzle-orm@0.36.4(@types/pg@8.11.10)(pg@8.13.1)(postgres@3.4.5):
     optionalDependencies:
       '@types/pg': 8.11.10
-      bun-types: 1.1.37
       pg: 8.13.1
       postgres: 3.4.5
 
-  drizzle-struct@https://codeload.github.com/tsaxking/drizzle-struct/tar.gz/75c943eea5834cc43f0e65762cd07ff0e6608b46(@types/node@22.10.3)(@types/pg@8.11.10)(bun-types@1.1.37)(typescript@5.7.2):
+  drizzle-orm@0.38.3(@types/pg@8.11.10)(pg@8.13.1)(postgres@3.4.5):
+    optionalDependencies:
+      '@types/pg': 8.11.10
+      pg: 8.13.1
+      postgres: 3.4.5
+
+  drizzle-struct@https://codeload.github.com/tsaxking/drizzle-struct/tar.gz/703cfcb82863c59c71ba9266748505f1e766ad0d(@types/node@22.10.4)(@types/pg@8.11.10):
     dependencies:
+      '@types/proper-lockfile': 4.1.4
       dotenv: 16.4.7
-      drizzle-orm: 0.38.3(@types/pg@8.11.10)(bun-types@1.1.37)(pg@8.13.1)(postgres@3.4.5)
-      drizzle-zod: 0.6.1(drizzle-orm@0.38.3(@types/pg@8.11.10)(bun-types@1.1.37)(pg@8.13.1)(postgres@3.4.5))(zod@3.24.1)
+      drizzle-orm: 0.36.4(@types/pg@8.11.10)(pg@8.13.1)(postgres@3.4.5)
+      drizzle-zod: 0.6.1(drizzle-orm@0.36.4(@types/pg@8.11.10)(pg@8.13.1)(postgres@3.4.5))(zod@3.24.1)
       fuzzy-search: 3.2.1
       math: calculations.git@https://codeload.github.com/tsaxking/calculations/tar.gz/e169f626ac0a77ce6f389ea27150be0dadc19dd4
       pg: 8.13.1
       postgres: 3.4.5
       proper-lockfile: 4.1.2
-      svelte: 5.16.0
-      tcp-api: https://codeload.github.com/tsaxking/tcp-api/tar.gz/012211064c6d99653c8d69860a75bbffcc51e4d3
-      ts-node: 10.9.2(@types/node@22.10.3)(typescript@5.7.2)
-      ts-utils: global-ts-utilities.git@https://codeload.github.com/tsaxking/global-ts-utilities/tar.gz/38893cf5725d9eef050e811f37e89da89ed00bd7
+      svelte: 5.16.1
+      ts-node: 10.9.2(@types/node@22.10.4)(typescript@5.7.2)
+      ts-utils: https://codeload.github.com/tsaxking/global-ts-utilities/tar.gz/78515545075c95c433dc44d6bae801e1737f56db
+      typescript: 5.7.2
       uuid: 11.0.3
       zod: 3.24.1
     transitivePeerDependencies:
@@ -2282,11 +2348,15 @@ snapshots:
       - react
       - sql.js
       - sqlite3
-      - typescript
 
-  drizzle-zod@0.6.1(drizzle-orm@0.38.3(@types/pg@8.11.10)(bun-types@1.1.37)(pg@8.13.1)(postgres@3.4.5))(zod@3.24.1):
+  drizzle-zod@0.6.1(drizzle-orm@0.36.4(@types/pg@8.11.10)(pg@8.13.1)(postgres@3.4.5))(zod@3.24.1):
     dependencies:
-      drizzle-orm: 0.38.3(@types/pg@8.11.10)(bun-types@1.1.37)(pg@8.13.1)(postgres@3.4.5)
+      drizzle-orm: 0.36.4(@types/pg@8.11.10)(pg@8.13.1)(postgres@3.4.5)
+      zod: 3.24.1
+
+  drizzle-zod@0.6.1(drizzle-orm@0.38.3(@types/pg@8.11.10)(pg@8.13.1)(postgres@3.4.5))(zod@3.24.1):
+    dependencies:
+      drizzle-orm: 0.38.3(@types/pg@8.11.10)(pg@8.13.1)(postgres@3.4.5)
       zod: 3.24.1
 
   emoji-regex@8.0.0: {}
@@ -2430,8 +2500,6 @@ snapshots:
   get-tsconfig@4.8.1:
     dependencies:
       resolve-pkg-maps: 1.0.0
-
-  global-ts-utilities.git@https://codeload.github.com/tsaxking/global-ts-utilities/tar.gz/38893cf5725d9eef050e811f37e89da89ed00bd7: {}
 
   graceful-fs@4.2.11: {}
 
@@ -2616,7 +2684,7 @@ snapshots:
     dependencies:
       ansi-regex: 5.0.1
 
-  svelte@5.16.0:
+  svelte@5.16.1:
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@jridgewell/sourcemap-codec': 1.5.0
@@ -2633,12 +2701,6 @@ snapshots:
       magic-string: 0.30.17
       zimmerframe: 1.1.2
 
-  tcp-api@https://codeload.github.com/tsaxking/tcp-api/tar.gz/012211064c6d99653c8d69860a75bbffcc51e4d3:
-    dependencies:
-      proper-lockfile: 4.1.2
-      ts-utils: global-ts-utilities.git@https://codeload.github.com/tsaxking/global-ts-utilities/tar.gz/38893cf5725d9eef050e811f37e89da89ed00bd7
-      zod: 3.24.1
-
   tinybench@2.9.0: {}
 
   tinyexec@0.3.2: {}
@@ -2653,14 +2715,14 @@ snapshots:
     dependencies:
       os-tmpdir: 1.0.2
 
-  ts-node@10.9.2(@types/node@22.10.3)(typescript@5.7.2):
+  ts-node@10.9.2(@types/node@22.10.4)(typescript@5.7.2):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.11
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
-      '@types/node': 22.10.3
+      '@types/node': 22.10.4
       acorn: 8.14.0
       acorn-walk: 8.3.4
       arg: 4.1.3
@@ -2670,6 +2732,10 @@ snapshots:
       typescript: 5.7.2
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
+
+  ts-utils@https://codeload.github.com/tsaxking/global-ts-utilities/tar.gz/78515545075c95c433dc44d6bae801e1737f56db:
+    dependencies:
+      typescript: 5.7.2
 
   tsx@4.19.2:
     dependencies:
@@ -2682,22 +2748,19 @@ snapshots:
 
   typescript@5.7.2: {}
 
-  undici-types@5.26.5:
-    optional: true
-
   undici-types@6.20.0: {}
 
   uuid@11.0.3: {}
 
   v8-compile-cache-lib@3.0.1: {}
 
-  vite-node@2.1.8(@types/node@22.10.3):
+  vite-node@2.1.8(@types/node@22.10.4):
     dependencies:
       cac: 6.7.14
       debug: 4.4.0
       es-module-lexer: 1.6.0
       pathe: 1.1.2
-      vite: 5.4.11(@types/node@22.10.3)
+      vite: 5.4.11(@types/node@22.10.4)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -2709,19 +2772,19 @@ snapshots:
       - supports-color
       - terser
 
-  vite@5.4.11(@types/node@22.10.3):
+  vite@5.4.11(@types/node@22.10.4):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.4.49
       rollup: 4.29.1
     optionalDependencies:
-      '@types/node': 22.10.3
+      '@types/node': 22.10.4
       fsevents: 2.3.3
 
-  vitest@2.1.8(@types/node@22.10.3):
+  vitest@2.1.8(@types/node@22.10.4):
     dependencies:
       '@vitest/expect': 2.1.8
-      '@vitest/mocker': 2.1.8(vite@5.4.11(@types/node@22.10.3))
+      '@vitest/mocker': 2.1.8(vite@5.4.11(@types/node@22.10.4))
       '@vitest/pretty-format': 2.1.8
       '@vitest/runner': 2.1.8
       '@vitest/snapshot': 2.1.8
@@ -2737,11 +2800,11 @@ snapshots:
       tinyexec: 0.3.2
       tinypool: 1.0.2
       tinyrainbow: 1.2.0
-      vite: 5.4.11(@types/node@22.10.3)
-      vite-node: 2.1.8(@types/node@22.10.3)
+      vite: 5.4.11(@types/node@22.10.4)
+      vite-node: 2.1.8(@types/node@22.10.4)
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@types/node': 22.10.3
+      '@types/node': 22.10.4
     transitivePeerDependencies:
       - less
       - lightningcss

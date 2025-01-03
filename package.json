@@ -22,7 +22,6 @@
     "cli-table": "^0.3.11",
     "dotenv": "^16.4.7",
     "drizzle-orm": "^0.38.3",
-    "drizzle-struct": "github:tsaxking/drizzle-struct#semver:v1.0.1",
     "drizzle-zod": "^0.6.1",
     "fuzzy-search": "^3.2.1",
     "math": "git+https://github.com/tsaxking/calculations.git",
@@ -31,6 +30,7 @@
     "proper-lockfile": "^4.1.2",
     "ts-node": "^10.9.2",
     "ts-utils": "git+https://github.com/tsaxking/global-ts-utilities.git",
+    "drizzle-struct": "git+https://github.com/tsaxking/drizzle-struct.git",
     "zod": "^3.24.1"
   },
   "devDependencies": {
